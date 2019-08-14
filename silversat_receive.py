@@ -3,16 +3,19 @@
 import socket, sys
 import RPi.GPIO as GPIO
 import time
-from gnc import GNC
+from gnc.gnc import GNC
 
-UDP_IP = '192.168.0.105' # the ip address of the recieving computer
+# UDP_IP = '192.168.1.232' # the ip address of the recieving computer
+UDP_IP = ''
 UDP_PORT = 19614
 
-LIGHT = 24
+LIGHT = 18
+ALED = 25
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LIGHT, GPIO.OUT)
+GPIO.setup(ALED, GPIO.OUT)
 
 mygnc = GNC()
 
@@ -61,18 +64,19 @@ if __name__ == "__main__":
             if data == 'q':
                     runLoop = False
             if data == 'j': # code so that when i receive a j, print hi
-                print('Hi')
+                    print('Hi')
             if data == 'Zuri':
-                print('yummy tummy')
+                    print('yummy tummy')
             if data == 'on':
-                GPIO.output(LIGHT, True)
+                    GPIO.output(LIGHT, True)
+                    GPIO.output(ALED, True)
             if data == 'off':
-                GPIO.output(LIGHT, False)
+                    GPIO.output(LIGHT, False)
+                    GPIO.output(ALED, False)
             if data == 'head':
-                print (mygnc.orientation())
+                    print (mygnc.orientation())
             if data == 'position':
-                if mygnc.ready():
-                        print (mygnc.position())
-                else:
-                        print ('not ready')
-                
+                    if mygnc.ready():
+                            print (mygnc.position())
+                    else:
+                            print ('not ready')
