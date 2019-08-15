@@ -1,6 +1,13 @@
 import socket, sys
 
-UDP_IP = '192.168.0.105'
+# Computer running the sender must be on the same subnet as the receiver
+# If both sender and receiver are on the same computer, 127.0.0.1 will work.
+UDP_IP = '127.0.0.1'
+
+# otherwise, provide the IP address of the reciever. 
+# UDP_IP = '192.168.0.100'
+
+# Do not change this!
 UDP_PORT = 19614
 
 # the UDP_input function.  It listens for commands coming in from the Internet
@@ -26,8 +33,6 @@ def UDP_input(recPort = UDP_PORT):
 import socket
 
 # UDP_IP = socket.gethostbyname(socket.gethostname())
-UDP_IP = '192.168.0.105'  # fill in the receiver's IP address here.
-UDP_PORT = 19614
 
 print ("UDP target IP:", UDP_IP)
 print ("UDP target port:", UDP_PORT)
@@ -39,43 +44,7 @@ runstate = True
 
 while runstate:
     msg = input("command - ")
+    print ("Sending %s to %s:%s"%(msg,UDP_IP, UDP_PORT))
     sock.sendto(msg.encode('utf-8'), (UDP_IP, UDP_PORT))
     if msg =='q':
         runstate=False
-
-        if __name__ == "__main__":
-
-# THE MAIN PROGRAM STARTS HERE. 
-
-            print("Listening on port %s, socket %4.0f" % (UDP_IP,UDP_PORT))
-
-            runLoop = True
-            while runLoop:
-                data, addr = UDP_input();
-
-  # If the program received something, print it. If not, print a dot.
-  
-            if data:    
-                    print ("\nreceived command from %s: %s \n" % (addr,data))
-            else:
-                    sys.stdout.write('.')
-                    sys.stdout.flush()
-  
-  #  This is where any other commands would go.  Each command would consist of
-  #    an 'if' statement (if data == 'something':), followed by the action the
-  #    program should take.
-  
-  # if the program received a 'q', quit
-
-            if data == 'q':
-                    runLoop = False
-            if data == 'j':
-                print('Hi')
-                
-            if data == 'ok':
-                print('Roger that')
-
-
-
-
-

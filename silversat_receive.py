@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import socket, sys
+import socket, sys, os
 import RPi.GPIO as GPIO
 import time
 from gnc.gnc import GNC
@@ -41,19 +41,31 @@ if __name__ == "__main__":
 
 # THE MAIN PROGRAM STARTS HERE. 
 
-    print("Listening on port %s, socket %4.0f" % (UDP_IP,UDP_PORT))
+    usestdin = False
+    if len(sys.argv) > 1 and sys.argv[1] == "-":
+        usestdin = True
+        sys.argv.pop(1)
+        print("Waiting for commands on stdin...")
+    else:
+        print("Listening on port %s" % (UDP_PORT,))
 
-    runLoop = True
-    while runLoop:
-            data, addr = UDP_input();
+    while True:
+
+            if usestdin:
+                data = sys.stdin.readline().strip()
+                addr = "stdin"
+            else:
+                data, addr = UDP_input();
+
             #print(data,addr)
             # If the program received something, print it. If not, print a dot.
   
             if data:    
-                    print ("\nreceived command from %s: %s \n" % (addr,data))
+                    print ("\nreceived command from %s: %s" % (addr,data))
             else:
                     sys.stdout.write('.')
                     sys.stdout.flush()
+                    continue
   
             #  This is where any other commands would go.  Each command would consist of
             #    an 'if' statement (if data == 'something':), followed by the action the
@@ -62,21 +74,29 @@ if __name__ == "__main__":
             # if the program received a 'q', quit
 
             if data == 'q':
-                    runLoop = False
-            if data == 'j': # code so that when i receive a j, print hi
+                    break;
+            elif data == 'j': # code so that when i receive a j, print hi
                     print('Hi')
-            if data == 'Zuri':
+            elif data == 'Zuri':
                     print('yummy tummy')
-            if data == 'on':
+            elif data == 'on':
                     GPIO.output(LIGHT, True)
                     GPIO.output(ALED, True)
-            if data == 'off':
+            elif data == 'off':
                     GPIO.output(LIGHT, False)
                     GPIO.output(ALED, False)
-            if data == 'head':
+            elif data == "photo":
+                    os.system("cd /home/pi/flight-software/payload; python3 VGAcamera.py")
+            elif data == "post":
+                    os.system("cd /home/pi/flight-software/payload; python3 works.py")
+            elif data == 'head':
                     print (mygnc.orientation())
-            if data == 'position':
+            elif data == 'accel':
+                    print (mygnc.acceleration())
+            elif data == 'position':
                     if mygnc.ready():
                             print (mygnc.position())
                     else:
-                            print ('not ready')
+                            print ('GPS not ready')
+            else:
+                    print ("Bad request: "+data)
