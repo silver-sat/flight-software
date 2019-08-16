@@ -86,15 +86,12 @@ if __name__ == "__main__":
                     GPIO.output(LIGHT, False)
                     GPIO.output(ALED, False)
             elif data == "photo":
+                    print ("Photo started...!")
                     os.system("cd /home/pi/flight-software/payload; python3 VGAcamera.py")
                     if os.path.exists('/home/pi/Desktop/image.jpg') and os.path.getsize('/home/pi/Desktop/image.jpg') > 0:
                         print ("Photo taken!")
                     else:
                         print ("Photo failed...")
-            elif data == "post":
-                    print ("Started posting...")
-                    os.system("cd /home/pi/flight-software/payload; python3 works.py")
-                    print ("Finished posting!")
             elif data == 'head':
                     print (mygnc.orientation())
             elif data == 'accel':
